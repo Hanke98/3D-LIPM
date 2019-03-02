@@ -11,18 +11,19 @@ ax = p3.Axes3D(fig)
 def main():
     model = LIPM()
     te, tbn = model.calc_te_tbn()
-    x, y = model.calc_x()
+    x, y, f = model.calc_x()
     dt = te / model.fra_per_sec
     z = np.ones_like(y) * model.h
     l = ax.plot(x, y, z)
     lipm, = ax.plot([0, 0], [0, 0], [0, model.h], 'ro-')
-    color = ['r', 'g']
+    swing, = ax.plot([0, 0], [0, 0], [0, model.h], 'go-')
 
     def update(newd):
         lipm.set_data([newd[1][0], newd[0][0]], [newd[1][1], newd[0][1]])
         lipm.set_3d_properties([0, model.h])
-        lipm.set_color(newd[-1])
-        return lipm,
+        swing.set_data([newd[-1][0], newd[0][0]], [newd[-1][1], newd[0][1]])
+        swing.set_3d_properties([newd[-1][-1], model.h])
+        return lipm, swing,
 
     def init():
         model.reset()
@@ -30,10 +31,10 @@ def main():
         return l
 
     def gen_dot():
-        for com in zip(x, y):
+        for xx, yy, ff in zip(x, y, f):
             model.update()
             cur_origin, cur = model.get_current_origin()
-            newdot = [com, cur_origin, color[cur % 2]]
+            newdot = [(xx, yy), cur_origin, ff]
             yield newdot
 
     ani = animation.FuncAnimation(fig, update,

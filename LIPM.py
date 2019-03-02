@@ -20,6 +20,7 @@ class LIPM:
         self.origin_seq = [self.origin.copy()]
         self.origin_cur = 0
         self.dt = 0.01
+        self.max_foot_height = 0.1
 
     def calc_te_tbn(self):
         te = 0.1
@@ -83,9 +84,14 @@ class LIPM:
         x = []
         phase = 0
         count = 0
+        foot_swing = []
         while phase < 2 * self.steps:
             kt = self.k * t
             yt = self.y0s[phase % 2] * np.cosh(self.k * t)
+            ftx = self.origin[0] - srx + 2 * srx * self.qt(t)
+            fty = -self.origin[1]
+            ftz = self.lt(t)
+            foot_swing.append([ftx, fty, ftz])
             y.append(yt + self.origin[1])
 
             a = [np.cosh(kt), np.sinh(kt) / self.k, t, 1]
@@ -101,7 +107,7 @@ class LIPM:
                 self.origin_seq.append(self.origin.copy())
                 phase += 1
 
-        return x, y
+        return x, y, foot_swing
 
     def update(self):
         self.t += self.dt
@@ -116,5 +122,8 @@ class LIPM:
         self.t = 0
         self.origin_cur = 0
 
-    def calc_foot(self):
-        pass
+    def qt(self, t):
+        return 0.5 * (1 - np.cos(np.pi * (t - self.tbn) / (self.te - self.tbn)))
+
+    def lt(self, t):
+        return self.max_foot_height * 0.5 * (1 - np.cos(2 * np.pi * (t - self.tbn) / (self.te - self.tbn)))
