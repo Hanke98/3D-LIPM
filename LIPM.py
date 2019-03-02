@@ -6,7 +6,7 @@ class LIPM:
         self.t = 0
         self.te = 0.1
         self.tbn = 0
-        self.h = 0.343
+        self.h = 0.4
         self.g = 9.81
         self.k = np.sqrt(self.g / self.h)
         self.y0s = [-0.01, 0.01]
@@ -21,6 +21,8 @@ class LIPM:
         self.origin_cur = 0
         self.dt = 0.01
         self.max_foot_height = 0.1
+        self.legs = [0.25, 0.15, 0.25, 0.15]
+        self.theta = [[0, 0, 0] for _ in range(len(self.legs))]
 
     def calc_te_tbn(self):
         te = 0.1
@@ -95,7 +97,7 @@ class LIPM:
             y.append(yt + self.origin[1])
 
             a = [np.cosh(kt), np.sinh(kt) / self.k, t, 1]
-            x.append(np.dot(a, c).flatten() + self.origin[0])
+            x.append(np.dot(a, c)[0] + self.origin[0])
 
             t += dt
             count += 1
@@ -127,3 +129,6 @@ class LIPM:
 
     def lt(self, t):
         return self.max_foot_height * 0.5 * (1 - np.cos(2 * np.pi * (t - self.tbn) / (self.te - self.tbn)))
+
+    def fk(self):
+        pass
