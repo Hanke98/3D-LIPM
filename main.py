@@ -69,7 +69,7 @@ def main():
 
     ani = animation.FuncAnimation(fig, update,
                                   frames=gen_dot,
-                                  interval=dt * model.fra_per_sec,
+                                  interval=100,
                                   init_func=init,
                                   save_count=len(x))
     # ani.save('./videos/walk3.mp4', writer='ffmpeg', fps=80)
