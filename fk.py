@@ -41,10 +41,10 @@ def ik(root, l1, l2, l3, target):
 
 
 if __name__ == '__main__':
-    theta1 = [0, 0, 90]
-    theta2 = [0, 0, 45]
-    theta3 = [0, 0, 45]
-    ra = [0, -1, 0, 1]
+    theta1 = [0., 0., 45.]
+    theta2 = [0., 0., 45.]
+    theta3 = [0., 0., 45.]
+    ra = [0., -1., 0., 1.]
     rb = [0, -1, 0, 1]
     rc = [0, -1, 0, 1]
 
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     b = Link(rb, theta2)
     c = Link(rc, theta3)
     o = [0, 0, 0]
-    t = [2, 0, 0]
+    t = [3, 0, 0]
 
     # fk(o, a, b, c)
     # ik(o, a, b, c, t)

@@ -1,5 +1,3 @@
-import numpy as np
-import glm
 from Utils import *
 
 
@@ -31,16 +29,15 @@ class KineChain:
             m = rotate(m, l.theta)
             l.pos = to_numpy(m * l.end)
             m = glm.translate(m, l.trans)
-        # print(self.chain[-1].pos)
 
     def ik(self, t):
-        h = 0.0001
-        alpha = 0.00001
+        h = 1
+        alpha = 0.1
         count = 0
         while True:
             jac = np.zeros((3, len(self.chain * 3)))
             self.fk()
-            # print(count, self.chain[-1].pos)
+            print(count, self.chain[-1].pos)
             e = self.chain[-1].pos
             for i, l in enumerate(self.chain):
                 for j in range(len(l.theta)):
@@ -49,17 +46,17 @@ class KineChain:
                     e_p = self.chain[-1].pos
                     d = (e_p - e) / h
                     l.theta[j] -= h
-                    # self.fk()
                     jac[0, i * 3 + j] = d[0]
                     jac[1, i * 3 + j] = d[1]
                     jac[2, i * 3 + j] = d[2]
-            j_plus = np.dot(np.linalg.inv(np.dot(jac.T, jac)), jac.T)
+            self.fk()
+            j_plus = np.dot(jac.T, np.linalg.inv(np.dot(jac, jac.T)))
             de = t - e
-            if np.dot(de, de) < 0.01:
+            if np.dot(de, de) < 0.0001:
                 break
             dt = np.dot(j_plus, de)
             dt = np.reshape(dt * alpha, (len(self.chain), 3))
             self.apply_angle(dt)
             count += 1
-            if count > 100:
+            if count > 1000:
                 break
