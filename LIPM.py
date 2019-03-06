@@ -105,7 +105,8 @@ class LIPM:
                 t = self.tbn
                 self.origin[0] += srx
                 self.origin[1] *= -1
-                self.origin_seq[-1].append(count)
+                # self.origin_seq[-1].append(count)
+                self.origin_seq[-1].append(0)
                 self.origin_seq.append(self.origin.copy())
                 phase += 1
 

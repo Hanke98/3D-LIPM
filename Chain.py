@@ -7,7 +7,6 @@ from Link import *
 fig = plt.figure()
 ax = p3.Axes3D(fig)
 
-
 if __name__ == '__main__':
     theta1 = [0., 0., 45.]
     theta2 = [0., 0., 45.]
@@ -16,9 +15,9 @@ if __name__ == '__main__':
     rb = [0., -1., 0., 1.]
     rc = [0., -1., 0., 1.]
 
-    a = Link(ra, theta1)
-    b = Link(rb, theta2)
-    c = Link(rc, theta3)
+    a = Link('a', ra, theta1)
+    b = Link('b', rb, theta2)
+    c = Link('c', rc, theta3)
     o = [0, 0, 0]
     t = [-2, 0, 0.5]
 
@@ -26,6 +25,8 @@ if __name__ == '__main__':
     chain.add_link(a)
     chain.add_link(b)
     chain.add_link(c)
+    # chain.links[-1].lb = [0, 0, 0]
+    # chain.links[-1].ub = [0, 0, 0]
     # chain.ik(t)
 
     la, = ax.plot([], [], [], 'ro-')
@@ -53,12 +54,12 @@ if __name__ == '__main__':
 
     def gen_dot():
         while not chain.ik_step(t):
-            l = [chain.root, chain.chain[0].pos, chain.chain[1].pos, chain.chain[2].pos]
+            l = [chain.root, chain.links[0].pos, chain.links[1].pos, chain.links[2].pos]
             yield np.transpose(l)
 
 
     ani = animation.FuncAnimation(fig, update,
                                   frames=gen_dot,
-                                  interval=30,
+                                  interval=3000,
                                   init_func=init)
     plt.show()
